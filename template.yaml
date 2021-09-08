@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  predict_sentiment_serverless
+
+  Sample SAM Template for predict_sentiment_serverless
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 300
+    MemorySize: 2048
+
+Resources:
+  MyApi:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      StageName: Prod
+
+  MovieSentimentPrediction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: movie_review/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Events:
+        MovieSentimentPredictionAPI:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyApi
+            Path: '/movie_review'
+            Method: POST
+
+
